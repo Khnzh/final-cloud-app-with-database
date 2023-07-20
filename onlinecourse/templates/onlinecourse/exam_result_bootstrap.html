@@ -36,19 +36,49 @@
 </nav>
 
 <div class="container-fluid">
-    {% if grade > 80 %}
+    {% if course.score > 80 %}
     <div class="alert alert-success">
-       <!--HINT Display passed info -->
+       <p>Congratulations, Elon Mask! You have passed the exam and completed course with score {{course.score}}/100</p>
     </div>
         {% else %}
         <div class="alert alert-danger">
-            <!--HINT Display failed info -->
+            <p>Failed! Sorry, Elon Mask! You have failed exam with score {{course.score}}/100</p>
         </div>
         <a class="btn btn-link text-danger" href="{% url 'onlinecourse:course_details' course.id %}">Re-test</a>
         {% endif %}
         <div class="card-columns-vertical mt-1">
         <h5 class="">Exam results</h5>
-            <!--HINT Display exam results-->
+        {% for question in course.question_set.all %}
+        <div class="card-columns-vertical" id="exam1">
+        
+            <div class="card mt-1">
+                <div class="card-header"><h5>{{question.text}}</h5></div>
+                {% csrf_token %}
+                <div class="form-group">
+                    {% for choice in question.choice_set.all %}
+                    {% if choice.id in selected_ids and choice.is_true %}    
+                    <div class="form-check">
+                                <p class='text-success'>Correct answer: {{ choice.content }}</p>
+                    </div>
+                    {% elif choice.is_true %}
+                    <div class="form-check">
+                        <p class='text-warning'>Not selected: {{ choice.content }}</p>
+                    </div>
+                    {% elif choice.id in selected_ids %}
+                    <div class="form-check">
+                        <p class='text-danger'>Wrong answer: {{ choice.content }}</p>
+                    </div>
+                    {% else %}
+                    <div class="form-check">
+                        <p>{{ choice.content }}</p>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+        </div>
+        {% endfor %}
         </div>
     </div>
 </body>

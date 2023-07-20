@@ -1,5 +1,6 @@
 import sys
 from django.utils.timezone import now
+from datetime import datetime
 try:
     from django.db import models
 except Exception:
@@ -62,6 +63,7 @@ class Course(models.Model):
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Enrollment')
     total_enrollment = models.IntegerField(default=0)
     is_enrolled = False
+    score = models.IntegerField(default=0)
 
     def __str__(self):
         return "Name: " + self.name + "," + \
@@ -102,13 +104,13 @@ class Enrollment(models.Model):
     # Has question content
     # Other fields and methods you would like to design
 class Question(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     text = models.CharField(max_length=130, default='Undefined question')
     grade = models.DecimalField(max_digits=1, decimal_places=0)
 
     def is_get_score(self, selected_ids):
-        all_answers = self.choice_set.filter(is_correct=True).count()
-        selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
+        all_answers = self.choice_set.filter(is_true=True).count()
+        selected_correct = self.choice_set.filter(is_true=True, id__in=selected_ids).count()
         if all_answers == selected_correct:
             return True
         else:
@@ -133,4 +135,5 @@ class Choice(models.Model):
 class Submission(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     choices = models.ManyToManyField(Choice)
+    time = models.TimeField(default=datetime.now)
 #    Other fields and methods you would like to design

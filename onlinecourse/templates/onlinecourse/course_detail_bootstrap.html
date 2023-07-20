@@ -48,14 +48,15 @@
                     <div class="card-header"><h5>Lesson {{lesson.order|add:1}}: {{lesson.title}}</h5></div>
                     <div class="card-body">{{lesson.content}}</div>
                 </div>
+            {% endfor %}
                 
         </div>
         <button class="btn btn-primary btn-lg btn-block" type="button" data-toggle="collapse" data-target="#exam" aria-expanded="false" aria-controls="collapseExample">
                     Exam
         </button>
         <div class="collapse" id="exam">
-            <form id="questionform" action="point to a submit view" method="post">    
-        {% for question in lesson.question_set.all %}
+            <form id="questionform" action="./submit/" method="POST">    
+        {% for question in course.question_set.all %}
             <div class="card-columns-vertical" id="exam1">
             
                 <div class="card mt-1">
@@ -79,7 +80,6 @@
             <input class="btn btn-success btn-block" type="submit" value="Submit">
             </form>
         </div>
-            {% endfor %}
             <!-- <HINT> Create a form to collect the selected choices for all questions -->
             <!-- <HINT> For each question choice, you may create a checkbox input like
             <input type="check" name="choice_{{choice.id}}" id="{{choice.id}}" ...>
